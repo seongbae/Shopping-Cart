@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('canvas::admin.layouts.app')
 @section('content')
 <div class="invoice p-3 mb-3">
   <!-- title row -->
