@@ -19,8 +19,8 @@ class Product extends Model
 
     public function getImageAttribute()
     {
-        if ($this->image_url != null)
-            return $this->image_url;
+        if ($this->photo_url != null)
+            return $this->photo_url;
         else 
             return '/img/product-placeholder.png';
     }

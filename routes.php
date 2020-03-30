@@ -3,8 +3,8 @@
 Route::group(['namespace' => 'App\Modules\Cart\Http\Controllers', 'middleware' => ['web']], function () {
 
 	// Cart
-	Route::get('catalog', 'ProductController@index');
-	Route::get('catalog/{product}', 'ProductController@show');
+	Route::get('catalog', 'ProductController@index')->name('products.index');
+	Route::get('catalog/{product}', 'ProductController@show')->name('products.show');
 	Route::get('cart/add/{id}', 'CartController@addToCart');
 	Route::post('cart/add', 'CartController@addToCartbyForm');
 	Route::get('cart/remove/{id}', 'CartController@removeFromCart');
@@ -14,7 +14,7 @@ Route::group(['namespace' => 'App\Modules\Cart\Http\Controllers', 'middleware' =
 	Route::get('thank-you', 'OrderController@showThankyou')->name('cart.thankyou');
 
 });
-
+ 
 Route::group(['namespace'=>'App\Modules\Cart\Http\Controllers\Admin', 'middleware' => ['web', 'auth'], 'prefix' => 'admin'], function () {
 
 	Route::resource('store/orders', 'OrderController');

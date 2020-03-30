@@ -303,24 +303,24 @@
     calculateSubtotal();
     calculateTotal();
 
-    // initial layout update
-    $('.rangeslider__fill').css('background','#DD1804');
-
+    
     // update when item quantity is changed
     $(document).on("keyup mouseup","#quantity:input", updateItem);
 
-    // update when donation slider is changed
-    $('input[type="range"]').rangeslider({
-      polyfill : false,
-      onInit : function() {
-          //this.output = $( '<div class="range-output" />' ).insertAfter( this.$range ).html( this.$element.val() );
-      },
-      onSlide : function( position, value ) {
-          $("#donation").text(value);
+    // Range slider used for donation
+    // $('.rangeslider__fill').css('background','#DD1804');
 
-          calculateTotal();
-      }
-    });
+    // $('input[type="range"]').rangeslider({
+    //   polyfill : false,
+    //   onInit : function() {
+    //       //this.output = $( '<div class="range-output" />' ).insertAfter( this.$range ).html( this.$element.val() );
+    //   },
+    //   onSlide : function( position, value ) {
+    //       $("#donation").text(value);
+
+    //       calculateTotal();
+    //   }
+    // });
 
     // Update tax rate, amount, and total when state is changed
     $("#state").change(function () {

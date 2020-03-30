@@ -11,9 +11,13 @@ use App\Modules\Cart\Models\Product;
 use App\Modules\Cart\Models\OrderItem;
 use App\Modules\Cart\Mail\ItemPurchased;
 use App\Modules\Cart\Mail\OrderShipped;
+use Illuminate\Support\Str;
+use App\Traits\UploadTrait;
 
 class CartService
 {
+
+    use UploadTrait;
 
     public function createOrder($token, $firstName, $lastName, $email, $phone, $street, $street2, $city, $state, $zip, $ccName, $ccLast4, $subtotal, $tax, $shipping, $total, $userId, $orderItems, $donation, $notes=null )
     {
@@ -103,9 +107,49 @@ class CartService
     	
     }
 
-    public function createProduct($name, $price, $description = null)
+    public function createProduct($name, $price, $description = null, $image = null)
     {
-        return Product::create(['name'=>$name, 'price'=>$price, 'description'=>$description]);
+        $product = Product::create(['name'=>$name, 'price'=>$price, 'description'=>$description]);
+
+        if ($image) {
+            // Make a image name based on user name and current timestamp
+            $name = Str::slug($product->name).'_'.time();
+            // Define folder path
+            $folder = '/uploads/images/';
+            // Make a file path where image will be stored [ folder path + file name + file extension]
+            $filePath = '/storage'.$folder . $name. '.' . $image->getClientOriginalExtension();
+            // Upload image
+            $this->uploadOne($image, $folder, 'public', $name);
+            // Set user profile image path in database to filePath
+            $product->photo_url = $filePath;
+            $product->save();
+        }
+
+        return $product;
+    }
+
+    public function updateProduct($product, $name, $price, $description = null, $image = null)
+    {
+        $product->name = $name;
+        $product->price = $price;
+        $product->description = $description;
+
+        if ($image) {
+            // Make a image name based on user name and current timestamp
+            $name = Str::slug($product->name).'_'.time();
+            // Define folder path
+            $folder = '/uploads/images/';
+            // Make a file path where image will be stored [ folder path + file name + file extension]
+            $filePath = '/storage'.$folder . $name. '.' . $image->getClientOriginalExtension();
+            // Upload image
+            $this->uploadOne($image, $folder, 'public', $name);
+            // Set user profile image path in database to filePath
+            $product->photo_url = $filePath;
+        }
+        
+        $product->save();
+
+        return $product;
     }
 
     public function updateShipping($orderId, $carrier, $code, $labelCreated, $shipped, $notify)

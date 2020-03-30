@@ -16,7 +16,7 @@ class CartServiceProvider extends BaseServiceProvider
      */
     public function boot(GateContract $gate) {
 
-        $this->loadMigrationsFrom(__DIR__.'/Migrations');
+        //$this->loadMigrationsFrom(__DIR__.'/Migrations');
         $this->loadRoutesFrom(__DIR__.'/routes.php');
         $this->loadViewsFrom(__DIR__.'/Views', 'cart');
 

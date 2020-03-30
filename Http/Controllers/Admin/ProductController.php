@@ -8,6 +8,7 @@ use App\Traits\UploadTrait;
 use App\Modules\Cart\DataTables\ProductsDataTable;
 use App\Modules\Cart\Services\CartService;
 use App\Modules\Cart\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -29,6 +30,7 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function index(ProductsDataTable $datatable)
     {
+        Log::info('Loading products...');
         return $datatable->render('cart::admin.products.index');
     }
 
@@ -54,8 +56,9 @@ class ProductController extends \App\Http\Controllers\Controller
         $name = $request->get('name');
         $description = $request->get('description');
         $price = $request->get('price');
+        $img = $request->file('photo_url');
         
-        $product = $this->productService->createProduct($name, $price, $description);
+        $product = $this->productService->createProduct($name, $price, $description, $img);
 
         if ($product)
             flash()->success('Product saved');
@@ -96,28 +99,17 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->name = $request->get('name');
-        $product->description = $request->get('description');
-        $product->price = $request->get('price');
+        $name = $request->get('name');
+        $description = $request->get('description');
+        $price = $request->get('price');
+        $img = $request->file('photo_url');
         
-        if ($request->has('image_url')) {
-            // Get image file
-            $image = $request->file('image_url');
-            // Make a image name based on user name and current timestamp
-            $name = Str::slug($request->input('name')).'_'.time();
-            // Define folder path
-            $folder = '/uploads/images/';
-            // Make a file path where image will be stored [ folder path + file name + file extension]
-            $filePath = '/storage'.$folder . $name. '.' . $image->getClientOriginalExtension();
-            // Upload image
-            $this->uploadOne($image, $folder, 'public', $name);
-            // Set user profile image path in database to filePath
-            $product->image_url = $filePath;
-        }
-        
-        $product->save();
+        $product = $this->productService->updateProduct($product, $name, $price, $description, $img);
 
-        flash()->success('Product updated');
+        if ($product)
+            flash()->success('Product updated');
+        else
+            flash()->error('Product could not be updated');
 
         return redirect()->back();
     }
