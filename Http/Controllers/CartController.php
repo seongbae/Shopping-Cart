@@ -25,8 +25,6 @@ class CartController extends \App\Http\Controllers\Controller
         
         $cartItems = collect();
 
-        Log::info('cart:' . json_encode($cart));
-
         foreach ($cart as $item) { // This will search in the 2 jsons
              foreach($item as $key => $value) {
                 $item = Product::find($key);
